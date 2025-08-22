@@ -16,7 +16,6 @@ import base64
 import aiofiles
 import tempfile
 import shutil
-from sentence_transformers import SentenceTransformer
 
 # Import emergent integrations
 from emergentintegrations.llm.chat import LlmChat, UserMessage, FileContentWithMimeType
@@ -29,8 +28,14 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Initialize sentence transformer for embeddings
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+# Initialize sentence transformer for embeddings - handle import error gracefully
+embedding_model = None
+try:
+    from sentence_transformers import SentenceTransformer
+    embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+except ImportError as e:
+    print(f"Warning: SentenceTransformer not available: {e}")
+    print("Using mock embeddings for testing")
 
 # Create the main app
 app = FastAPI(title="ParamparaSmritiAI", description="AI-powered Cultural Heritage Preservation System")
