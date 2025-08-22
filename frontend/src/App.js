@@ -876,10 +876,10 @@ const SearchPage = ({ searchResults, setSearchResults }) => {
       {searchResults && (
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
           <h3 className="text-xl font-semibold mb-4 text-gray-800">
-            Search Results ({searchResults.total_found} found)
+            Search Results ({searchResults.total_found || 0} found)
           </h3>
           
-          {searchResults.results.length === 0 ? (
+          {(!searchResults.results || searchResults.results.length === 0) ? (
             <div className="text-center py-8 text-gray-500">
               No results found for "{searchResults.query}"
             </div>
@@ -888,15 +888,15 @@ const SearchPage = ({ searchResults, setSearchResults }) => {
               {searchResults.results.map((result, index) => (
                 <div key={index} className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-all">
                   <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-semibold text-orange-700">{result.title}</h4>
+                    <h4 className="font-semibold text-orange-700">{result.title || 'Untitled'}</h4>
                     <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                      {result.type}
+                      {result.type || 'document'}
                     </span>
                   </div>
-                  <p className="text-gray-600 text-sm mb-2">{result.content}</p>
+                  <p className="text-gray-600 text-sm mb-2">{result.content || 'No content preview'}</p>
                   <div className="flex justify-between text-xs text-gray-500">
-                    <span>{result.language}</span>
-                    <span>{result.region || result.performer}</span>
+                    <span>{result.language || 'Unknown'}</span>
+                    <span>{result.region || result.performer || ''}</span>
                     {result.score && <span>Score: {(result.score * 100).toFixed(1)}%</span>}
                   </div>
                 </div>
