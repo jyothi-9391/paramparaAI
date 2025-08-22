@@ -442,7 +442,10 @@ async def search_content(request: SearchRequest):
         
         if request.search_type == "semantic":
             # Generate query embedding
-            query_embedding = embedding_model.encode(request.query).tolist()
+            if embedding_model:
+                query_embedding = embedding_model.encode(request.query).tolist()
+            else:
+                query_embedding = [0.1] * 384  # Mock embedding
             
             # Search documents using vector similarity (MongoDB Atlas Vector Search in production)
             # For MVP, we'll do basic text matching
